@@ -15,4 +15,16 @@
 #
 
 class Project < ApplicationRecord
+  validates :project_id,
+    :project_name,
+    :enabled,
+    :project_cost,
+    :project_url,
+    presence: true
+
+  validates :project_id, :project_name, :project_url, uniqueness: true
+  validates :creation_date, :expiry_date, date: true
+  validates :enabled, inclusion: { in: [true, false],
+    message: "must be a boolean" }
+  validates :project_id, numericality: { only_integer: true }
 end
