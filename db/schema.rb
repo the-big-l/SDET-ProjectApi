@@ -40,8 +40,7 @@ ActiveRecord::Schema.define(version: 20170527024832) do
     t.integer  "country_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["country_id"], name: "index_target_countries_on_country_id", using: :btree
-    t.index ["project_id"], name: "index_target_countries_on_project_id", using: :btree
+    t.index ["project_id", "country_id"], name: "index_target_countries_on_project_id_and_country_id", unique: true, using: :btree
   end
 
 end

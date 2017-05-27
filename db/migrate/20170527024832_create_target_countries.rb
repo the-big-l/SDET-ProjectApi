@@ -6,7 +6,6 @@ class CreateTargetCountries < ActiveRecord::Migration[5.0]
 
       t.timestamps
     end
-    add_index :target_countries, :project_id
-    add_index :target_countries, :country_id
+    add_index :target_countries, [:project_id, :country_id], :unique => true
   end
 end
