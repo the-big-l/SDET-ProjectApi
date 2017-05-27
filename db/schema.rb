@@ -10,13 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170526044040) do
+ActiveRecord::Schema.define(version: 20170527015919) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "countries", force: :cascade do |t|
+    t.string   "name",       null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_countries_on_name", unique: true, using: :btree
+  end
+
   create_table "projects", force: :cascade do |t|
-    t.integer  "project_id"
     t.string   "project_name"
     t.datetime "creation_date"
     t.datetime "expiry_date"
@@ -25,8 +31,7 @@ ActiveRecord::Schema.define(version: 20170526044040) do
     t.string   "project_url"
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
-    t.index ["project_cost"], name: "index_projects_on_project_cost", unique: true, using: :btree
-    t.index ["project_id"], name: "index_projects_on_project_id", unique: true, using: :btree
+    t.index ["project_cost"], name: "index_projects_on_project_cost", using: :btree
     t.index ["project_name"], name: "index_projects_on_project_name", unique: true, using: :btree
   end
 
