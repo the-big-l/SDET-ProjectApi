@@ -3,7 +3,6 @@
 # Table name: projects
 #
 #  id            :integer          not null, primary key
-#  project_id    :integer
 #  project_name  :string
 #  creation_date :datetime
 #  expiry_date   :datetime
