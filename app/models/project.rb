@@ -26,4 +26,8 @@ class Project < ApplicationRecord
   validates :enabled, inclusion: { in: [true, false],
     message: "must be a boolean" }
   validates :id, numericality: { only_integer: true }
+
+  has_many :target_countries
+  has_many :countries,
+    through: :target_countries
 end
