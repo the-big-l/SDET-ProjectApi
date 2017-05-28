@@ -3,40 +3,50 @@ class ProjectsController < ApplicationController
     @project = Project.new(api_params)
     @errors = []
     additional_project_param_parsing
-    add_target_countries
 
     render_response
   end
 
+  def show
+    @project = Project.includes(
+      :countries,
+      :keys
+    ).find(params[:id])
+  end
+
   private
+
+  def additional_project_param_parsing
+    @project.id = params[:id]
+    @project.creation_date = reverse_date(params[:creationDate])
+    @project.expiry_date = reverse_date(params[:expiryDate])
+    add_target_countries
+    add_target_keys
+  end
 
   def render_response
     if @project.save && @errors.empty?
-      render json: @project
+      render :show
     else
       @errors.concat(@project.errors.full_messages)
       render json: @errors, status: 422
     end
   end
 
-  def additional_project_param_parsing
-    @project.id = params[:id]
-    @project.creation_date = reverse_date(params[:creationDate])
-    @project.expiry_date = reverse_date(params[:expiryDate])
-  end
-
   def add_target_countries
     create_countries
-    duplicate_countries?
+    duplicate?(:targetCountries)
     countries = Country.where(name: params[:targetCountries])
     @project.countries << countries
   end
 
-  def duplicate_countries?
-    target_countries = params[:targetCountries]
-    unless target_countries.uniq.count == target_countries.count
-      @errors << "Project contains duplicate countries"
+  def add_target_keys
+    create_keys
+    duplicate?(:targetKeys)
+    keys = params[:targetKeys].map do |key|
+      Key.find_by(number: key[:number], keyword: key[:keyword])
     end
+    @project.keys << keys
   end
 
   def create_countries
@@ -48,6 +58,19 @@ class ProjectsController < ApplicationController
     end
   end
 
+  def create_keys
+    params[:targetKeys].each do |key|
+      Key.create(number: key[:number], keyword: key[:keyword])
+    end
+  end
+
+  def duplicate?(key)
+    targets = params[key]
+    unless targets.uniq.count == targets.count
+      @errors << "Project contains duplicate #{key.to_s}"
+    end
+  end
+
   def reverse_date(date_time)
     date, time = date_time.split(' ')
     date = date[-4..-1] + date[0..3]
@@ -55,7 +78,7 @@ class ProjectsController < ApplicationController
   end
 
   def api_params
-    params[:snakecase].present? ? api_params : snakecase_params
+    params[:snakecase].present? ? project_params : snakecase_params
   end
 
   def project_params
