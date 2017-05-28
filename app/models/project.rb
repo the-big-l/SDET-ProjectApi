@@ -30,4 +30,8 @@ class Project < ApplicationRecord
   has_many :target_countries
   has_many :countries,
     through: :target_countries
+
+  has_many :target_keys
+  has_many :keys,
+    through: :target_keys
 end

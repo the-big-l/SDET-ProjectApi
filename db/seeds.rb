@@ -8,3 +8,5 @@
 Project.destroy_all
 Country.destroy_all
 TargetCountry.destroy_all
+Key.destroy_all
+TargetKey.destroy_all

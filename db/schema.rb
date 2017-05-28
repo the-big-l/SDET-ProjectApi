@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170527024832) do
+ActiveRecord::Schema.define(version: 20170528012559) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,6 +20,14 @@ ActiveRecord::Schema.define(version: 20170527024832) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_countries_on_name", unique: true, using: :btree
+  end
+
+  create_table "keys", force: :cascade do |t|
+    t.float    "number",     null: false
+    t.string   "keyword",    null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["number", "keyword"], name: "index_keys_on_number_and_keyword", unique: true, using: :btree
   end
 
   create_table "projects", force: :cascade do |t|
@@ -41,6 +49,14 @@ ActiveRecord::Schema.define(version: 20170527024832) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["project_id", "country_id"], name: "index_target_countries_on_project_id_and_country_id", unique: true, using: :btree
+  end
+
+  create_table "target_keys", force: :cascade do |t|
+    t.integer  "project_id", null: false
+    t.integer  "key_id",     null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id", "key_id"], name: "index_target_keys_on_project_id_and_key_id", unique: true, using: :btree
   end
 
 end
