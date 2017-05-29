@@ -16,7 +16,6 @@
 class Project < ApplicationRecord
   validates :id,
     :project_name,
-    :enabled,
     :project_cost,
     :project_url,
     presence: true
@@ -26,6 +25,7 @@ class Project < ApplicationRecord
   validates :enabled, inclusion: { in: [true, false],
     message: "must be a boolean" }
   validates :id, numericality: { only_integer: true }
+  validates :project_cost, numericality: true
 
   has_many :target_countries
   has_many :countries,
