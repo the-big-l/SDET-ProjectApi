@@ -1,6 +1,6 @@
 class ProjectsController < ApplicationController
   def create
-    @project = Project.new(api_params)
+    @project = Project.new(api_params.except(:target_countries, :target_keys))
     @errors = []
     additional_project_param_parsing
 
@@ -17,7 +17,6 @@ class ProjectsController < ApplicationController
   private
 
   def additional_project_param_parsing
-    @project.id = params[:id]
     @project.creation_date = reverse_date(params[:creationDate])
     @project.expiry_date = reverse_date(params[:expiryDate])
     add_target_countries
@@ -25,7 +24,9 @@ class ProjectsController < ApplicationController
   end
 
   def render_response
-    if @project.save && @errors.empty?
+    # The order here matters. Only attempt to save project if errors
+    # array is empty.
+    if @errors.empty? && @project.save
       render :show
     else
       @errors.concat(@project.errors.full_messages)
@@ -35,16 +36,16 @@ class ProjectsController < ApplicationController
 
   def add_target_countries
     create_countries
-    duplicate?(:targetCountries)
-    countries = Country.where(name: params[:targetCountries])
+    duplicate?(:target_countries)
+    countries = Country.where(name: api_params[:target_countries])
     @project.countries << countries
   end
 
   def add_target_keys
     create_keys
-    duplicate?(:targetKeys)
-    keys = params[:targetKeys].map do |key|
-      Key.find_by(number: key[:number], keyword: key[:keyword])
+    duplicate?(:target_keys)
+    keys = api_params[:target_keys].map do |key|
+      Key.find_by(key)
     end
     @project.keys << keys
   end
@@ -59,15 +60,15 @@ class ProjectsController < ApplicationController
   end
 
   def create_keys
-    params[:targetKeys].each do |key|
-      Key.create(number: key[:number], keyword: key[:keyword])
+    api_params[:target_keys].each do |key|
+      Key.create(key)
     end
   end
 
   def duplicate?(key)
-    targets = params[key]
+    targets = api_params[key].map(&:to_json)
     unless targets.uniq.count == targets.count
-      @errors << "Project contains duplicate #{key.to_s}"
+      @errors << "Project contains duplicate #{key.to_s.gsub('_', ' ')}"
     end
   end
 
@@ -82,7 +83,15 @@ class ProjectsController < ApplicationController
   end
 
   def project_params
-    params.permit(:projectName, :enabled, :projectCost, :projectUrl)
+    params.permit(
+      :id,
+      :projectName,
+      :enabled,
+      :projectCost,
+      :projectUrl,
+      targetCountries: [],
+      targetKeys: [:number, :keyword]
+    )
   end
 
   # Front End (javascript) convention is to store keys/variables in
