@@ -17,7 +17,6 @@ ActiveRecord::Schema.define(version: 20170528012559) do
 
   create_table "countries", force: :cascade do |t|
     t.string   "name",       null: false
-    t.integer  "project_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_countries_on_name", unique: true, using: :btree
@@ -32,7 +31,6 @@ ActiveRecord::Schema.define(version: 20170528012559) do
   end
 
   create_table "projects", force: :cascade do |t|
-    t.integer  "project_id"
     t.string   "project_name"
     t.datetime "creation_date"
     t.datetime "expiry_date"
@@ -41,8 +39,7 @@ ActiveRecord::Schema.define(version: 20170528012559) do
     t.string   "project_url"
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
-    t.index ["project_cost"], name: "index_projects_on_project_cost", unique: true, using: :btree
-    t.index ["project_id"], name: "index_projects_on_project_id", unique: true, using: :btree
+    t.index ["project_cost"], name: "index_projects_on_project_cost", using: :btree
     t.index ["project_name"], name: "index_projects_on_project_name", unique: true, using: :btree
   end
 
