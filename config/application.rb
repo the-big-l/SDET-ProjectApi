@@ -29,7 +29,8 @@ module SDETProjectapi
     # is encountered. You can’t capture the parsing exception in the
     # controller, as the controller is never involved in serving the
     # failed request.
-    # config.autoload_paths += Dir["#{config.root}/../app/middleware/**/"]
+    # 
+    # source: https://robots.thoughtbot.com/catching-json-parse-errors-with-custom-middleware
     config.middleware.use CatchJsonParseErrors
   end
 end
