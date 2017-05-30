@@ -34,4 +34,22 @@ class Project < ApplicationRecord
   has_many :target_keys
   has_many :keys,
     through: :target_keys
+
+  def self.find_project(params)
+    return Project.return_project(params[:projectid]) if params[:projectid]
+    projects = Project.all
+      .order(project_cost: :desc)
+      .includes(:countries, :keys)
+      .where(enabled: true)
+      .where.not(project_url: nil)
+      .where("DATE(expiry_date) >= ?", Date.today)
+    projects = projects.where(countries: { name: params[:country] }) if params[:country]
+    projects = projects.where(keys: { keyword: params[:keyword] }) if params[:keyword]
+    projects = projects.joins(:keys).where("keys.number >= ?", params[:number]) if params[:number]
+    Project.return_project(projects.first)
+  end
+
+  def self.return_project(id)
+    Project.includes(:countries, :keys).find_by_id(id)
+  end
 end
