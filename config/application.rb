@@ -1,5 +1,5 @@
 require_relative 'boot'
-
+require_relative '../app/middleware/catch_json_parse_errors'
 require 'rails/all'
 
 # Require the gems listed in Gemfile, including any gems
@@ -21,5 +21,15 @@ module SDETProjectapi
       :request_specs => false
       g.fixture_replacement :factory_girl, :dir => "spec/factories"
     end
+
+    # If a client submits invalid / poorly formatted JSON to a Rails app,
+    # a cryptic and unhelpful error is thrown. The middleware that parses
+    # parameters (ActionDispatch::ParamsParser) runs long before the
+    # controller is on the scene, and throws exceptions when invalid JSON
+    # is encountered. You can’t capture the parsing exception in the
+    # controller, as the controller is never involved in serving the
+    # failed request.
+    # config.autoload_paths += Dir["#{config.root}/../app/middleware/**/"]
+    config.middleware.use CatchJsonParseErrors
   end
 end
