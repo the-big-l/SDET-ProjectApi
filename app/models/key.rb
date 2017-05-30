@@ -13,4 +13,9 @@ class Key < ApplicationRecord
   validates :number, :keyword, presence: true, uniqueness: true
 
   has_many :target_keys
+
+  def keyword=(val)
+    val.nil? ? val : val.downcase!
+    write_attribute(:keyword, val)
+  end
 end

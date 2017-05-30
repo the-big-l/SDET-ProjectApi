@@ -7,8 +7,8 @@ RSpec.describe Key, type: :model do
     it { should validate_presence_of(:number) }
     it { should validate_presence_of(:keyword) }
 
-    it { should validate_uniqueness_of(:number) }
-    it { should validate_uniqueness_of(:keyword) }
+    it { should validate_uniqueness_of(:number).case_insensitive }
+    it { should validate_uniqueness_of(:keyword).case_insensitive }
   end
 
   describe 'Associations' do

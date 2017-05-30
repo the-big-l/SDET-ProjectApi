@@ -42,7 +42,7 @@ class ProjectsController < ApplicationController
   def add_target_countries
     create_countries
     duplicate?(:target_countries)
-    countries = Country.where(name: api_params[:target_countries])
+    countries = Country.where(name: api_params[:target_countries].map(&:downcase))
     @project.countries << countries
   end
 
@@ -59,7 +59,7 @@ class ProjectsController < ApplicationController
     # ActiveRecord (ORM) isn't smart enough to insert mulitple records
     # in one commit so iterating here is fine. A custom SQL insert would
     # be more efficient and can be added later.
-    params[:targetCountries].each do |country|
+    api_params[:target_countries].each do |country|
       Country.create(name: country)
     end
   end

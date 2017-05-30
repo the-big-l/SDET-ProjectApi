@@ -12,4 +12,9 @@ class Country < ApplicationRecord
   validates :name, presence: true, uniqueness: true
 
   has_many :target_countries
+
+  def name=(val)
+    val.nil? ? val : val.downcase!
+    write_attribute(:name, val)
+  end
 end
