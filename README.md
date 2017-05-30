@@ -1,24 +1,19 @@
-# README
+## SDET Project API
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This repo builds an api to create projects and then retrieve them using RESTful practices. Backend is built using Ruby on Rails which uses Rspec for testing and FactoryGirl for creating fixtures. Data is stored in a PostgreSQL db, which utilizes a binary search tree on indexes bringing time complexity of searches to O(log n).  
 
-Things you may want to cover:
+### Dependencies
+- Ruby
+- Rails
+- PostgreSQL
 
-* Ruby version
+#### Run
 
-* System dependencies
+1. Clone repo `git clone https://github.com/the-big-l/SDET-ProjectApi.git`
+2. Install gems (ruby libraries) using `bundle install`
+3. Run tests: `bundle exec rspec`
+4. Start server (localhost:3000): `rails s`
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+### Unimplemented Features
+- Implement middleware to catch badly formatted json (Rails limitation)
+- Additional testing of Project::find_project() method
