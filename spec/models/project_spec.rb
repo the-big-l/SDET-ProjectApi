@@ -28,4 +28,37 @@ RSpec.describe Project, type: :model do
     it { should have_many(:target_keys) }
     it { should have_many(:keys) }
   end
+
+  describe 'model_methods' do
+  let!(:project_ex) { FactoryGirl.create :expired_project }
+  let!(:project_dis) { FactoryGirl.create :disabled_project }
+  let!(:project_low) { FactoryGirl.create :enabled_unexpired_low_cost_project }
+  let!(:project_high) { FactoryGirl.create :enabled_unexpired_high_cost_project }
+
+    describe '::find_project' do
+      context 'when given no params' do
+        it 'returns an enabled, unexpired project with the highest cost' do
+          project = Project.find_project({})
+          expect(project).to eq project_high
+        end
+      end
+
+      describe 'when given a projectid' do
+        context "with no add'l params" do
+          it 'should return the associated project' do
+            project = Project.find_project(projectid: 1)
+            expect(project).to eq project
+          end
+        end
+        context "with add'l params" do
+          it 'should still return the associated project' do
+            project = Project.find_project(projectid: 1, country: 'usa')
+            expect(project).to eq project
+          end
+        end
+      end
+
+      context 'when given '
+    end
+  end
 end
