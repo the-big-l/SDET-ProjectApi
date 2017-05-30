@@ -13,10 +13,12 @@ class ProjectsController < ApplicationController
   end
 
   def show
-    @project = Project.includes(
-      :countries,
-      :keys
-    ).find(params[:id])
+    @project = Project.find_project(params)
+    if @project
+      render :show
+    else
+      render json: { message: 'no project found' }, status: 200
+    end
   end
 
   private
@@ -66,7 +68,7 @@ class ProjectsController < ApplicationController
 
   def create_keys
     api_params[:target_keys].each do |key|
-      Key.create(key)
+      Key.create(number: key[:number], keyword: key[:keyword])
     end
   end
 
