@@ -1,6 +1,11 @@
 class ProjectsController < ApplicationController
   def create
-    @project = Project.new(api_params.except(:target_countries, :target_keys))
+    @project = Project.new(api_params.except(
+      :target_countries,
+      :target_keys,
+      :creation_date,
+      :expiry_date
+      ))
     @errors = []
     additional_project_param_parsing
 
@@ -17,8 +22,8 @@ class ProjectsController < ApplicationController
   private
 
   def additional_project_param_parsing
-    @project.creation_date = reverse_date(params[:creationDate])
-    @project.expiry_date = reverse_date(params[:expiryDate])
+    @project.creation_date = reverse_date(api_params[:creation_date])
+    @project.expiry_date = reverse_date(api_params[:expiry_date])
     add_target_countries
     add_target_keys
   end
@@ -73,6 +78,7 @@ class ProjectsController < ApplicationController
   end
 
   def reverse_date(date_time)
+    return date_time unless date_time =~ /\d{8} \d{2}:\d{2}:\d{2}/
     date, time = date_time.split(' ')
     date = date[-4..-1] + date[0..3]
     [date, time].join(' ')
@@ -86,11 +92,13 @@ class ProjectsController < ApplicationController
     params.permit(
       :id,
       :projectName,
+      :creationDate,
+      :expiryDate,
       :enabled,
       :projectCost,
       :projectUrl,
       targetCountries: [],
-      targetKeys: [:number, :keyword]
+      targetKeys: [:number, :keyword],
     )
   end
 
