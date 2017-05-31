@@ -22,7 +22,7 @@ Most of the logic is contained in the `app` folder. Any requests will hit 'app/c
 
 Rspec tests are contained in the `spec` folder and a postman collection is stored in the `docs` folder.
 
-Logs are stored at root in `#{environment}.log`
+Logs are stored at root in `development.log`
 
 ### Future Development
 - Implement middleware to gracefully catch badly formatted json (current Rails limitation)
