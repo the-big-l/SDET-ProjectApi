@@ -1,0 +1,145 @@
+{
+	"variables": [],
+	"info": {
+		"name": "SDET API Tests",
+		"_postman_id": "de51defe-831e-628c-35dd-c32f7b3049d6",
+		"description": "These are tests for the SDET coding project for Unity",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET no params",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var data = JSON.parse(responseBody);",
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"tests[\"Returns project of highest cost that is enabled and unexpired\"] = data.id = 4"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "localhost:3000/requestProject",
+				"method": "GET",
+				"header": [
+					{
+						"key": "//projectid",
+						"value": "1",
+						"description": "",
+						"disabled": true
+					}
+				],
+				"body": {},
+				"description": "Check if a GET request with no query string returns the project with the highest cost that is bot enabled and not yet expired"
+			},
+			"response": []
+		},
+		{
+			"name": "GET includes projectid",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var data = JSON.parse(responseBody);",
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"tests[\"Returns the correct project regardless of other params\"] = data.id = 1"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "localhost:3000/requestProject?projectid=1&country=japan",
+				"method": "GET",
+				"header": [
+					{
+						"key": "//projectid",
+						"value": "1",
+						"description": "",
+						"disabled": true
+					}
+				],
+				"body": {},
+				"description": "Check if a GET request with no query string returns the project with the highest cost that is bot enabled and not yet expired"
+			},
+			"response": []
+		},
+		{
+			"name": "GET search Country",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var data = JSON.parse(responseBody);",
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"tests[\"Returns the project with the highest cost\"] = data.id = 4"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "localhost:3000/requestProject?country=mexico",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "GET includes key number and country",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var data = JSON.parse(responseBody);",
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"tests[\"Returns the project with target key.number greater than 50 and includes mexico\"] = data.id = 3"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "localhost:3000/requestProject?number=50&country=mexico",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": "This will return the project that includes the country and includes a target key that is greater than or equal to 50"
+			},
+			"response": []
+		},
+		{
+			"name": "GET no project found",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var data = JSON.parse(responseBody);",
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"tests[\"Returns message when no project is found\"] = data.message = \"no project found\";"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "localhost:3000/requestProject?number=50&country=japan",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": "SEarches for a country which doesn't match any projects. Should return 'no project found' message"
+			},
+			"response": []
+		}
+	]
+}
